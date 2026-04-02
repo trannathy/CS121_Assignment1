@@ -1,4 +1,3 @@
-from string import puncutation
 class Token:
     def __init__(self, value: str):
         self._value = value.lower()
@@ -6,9 +5,9 @@ class Token:
     def value(self):
         return self._value
     
-class TokenList:
+class TokenMethod:
 
-    def tokenize(self, TextFilePath: str) -> list[Token]:
+    def tokenize(TextFilePath: str) -> list[Token]:
 
         #NEED TO CHANGE THIS TO SUPPORT PUNCUTATION
 
@@ -19,14 +18,21 @@ class TokenList:
         are not allowed to use regular expressions, and you are not allowed
         to import a tokenizer (e.g. from NLTK), since you are being asked to
         write a tokenizer. '''
+        if (TextFilePath.startswith("\"") and TextFilePath.endswith("\"")) or (TextFilePath.startswith("\'") and TextFilePath.endswith("\'")):
+            TextFilePath = TextFilePath[1:-1]
 
+        print("trying to open: " + TextFilePath)
         with open(TextFilePath, "r") as file:
             fileAsStr = file.read()
 
+        puncutation = "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~"
         for character in puncutation:
             fileAsStr.replace(character, " ")
             
         allWords = [Token(word) for word in fileAsStr.split() if word.isascii()]
+
+        print(allWords)
+
         return allWords
 
     def computeWordFrequencies(tokenList: list[Token]) -> dict:
@@ -38,10 +44,10 @@ class TokenList:
         
         mappedFrequencies = {}
         for token in tokenList:
-            if token in mappedFrequencies.keys():
-                mappedFrequencies[token.value] += 1
+            if token.value() in mappedFrequencies.keys():
+                mappedFrequencies[token.value()] += 1
             else:
-                mappedFrequencies[token.value] = 1
+                mappedFrequencies[token.value()] = 1
         return mappedFrequencies
 
     def print(frequencyMapping: dict) -> None:
@@ -59,13 +65,31 @@ class TokenList:
         <token> -> <freq>
         <token> => <freq>'''
 
-        #sorted method originated from https://flexiple.com/python/python-sort-dictionary-by-value
-        flippedList = sorted((value, key) for (key, value) in frequencyMapping.items())
-        sortedMapping = dict([k, v] for v, k in flippedList.reverse())
 
-        for token, freq in enumerate(sortedMapping):
-            print(f'{token} - {freq}')
-        
+        print(frequencyMapping)
+
+        sortedFrequencies = sorted(frequencyMapping.items())
     
-if __name__ == "main":
-    pass
+        print("printing sorted Frequencies: ", sortedFrequencies)
+
+        for token, frequency in sortedFrequencies:
+            print(f'{token} - {frequency}')
+
+def main():
+    filePath = input("Please enter a text file to tokenize, or submit a null string to terminate the program.\n")
+    if filePath:
+        try:
+            tm = TokenMethod
+            tokenized = tm.tokenize(filePath)
+            frequencies = tm.computeWordFrequencies(tokenized)
+            tm.print(frequencies)
+            print()
+        
+        except:
+            print("Unable to open path. Try again.")
+            print()
+            main()
+
+if __name__ == "__main__":
+    print("program is running")
+    main()

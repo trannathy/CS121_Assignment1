@@ -21,17 +21,18 @@ class TokenMethod:
         if (TextFilePath.startswith("\"") and TextFilePath.endswith("\"")) or (TextFilePath.startswith("\'") and TextFilePath.endswith("\'")):
             TextFilePath = TextFilePath[1:-1]
 
-        print("trying to open: " + TextFilePath)
+        # print("trying to open: " + TextFilePath)
+
         with open(TextFilePath, "r") as file:
             fileAsStr = file.read()
 
         puncutation = "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~"
         for character in puncutation:
-            fileAsStr.replace(character, " ")
+            fileAsStr = fileAsStr.replace(character, " ")
             
         allWords = [Token(word) for word in fileAsStr.split() if word.isascii()]
 
-        print(allWords)
+        # print(allWords)
 
         return allWords
 
@@ -66,11 +67,11 @@ class TokenMethod:
         <token> => <freq>'''
 
 
-        print(frequencyMapping)
+        # print(frequencyMapping)
 
         sortedFrequencies = sorted(frequencyMapping.items())
     
-        print("printing sorted Frequencies: ", sortedFrequencies)
+        # print("printing sorted Frequencies: ", sortedFrequencies)
 
         for token, frequency in sortedFrequencies:
             print(f'{token} - {frequency}')
@@ -78,18 +79,17 @@ class TokenMethod:
 def main():
     filePath = input("Please enter a text file to tokenize, or submit a null string to terminate the program.\n")
     if filePath:
-        try:
+        # try:
             tm = TokenMethod
             tokenized = tm.tokenize(filePath)
             frequencies = tm.computeWordFrequencies(tokenized)
             tm.print(frequencies)
             print()
         
-        except:
+        # except:
             print("Unable to open path. Try again.")
             print()
             main()
 
 if __name__ == "__main__":
-    print("program is running")
     main()

@@ -23,14 +23,17 @@ class TokenMethod:
 
         # print("trying to open: " + TextFilePath)
 
-        with open(TextFilePath, "r") as file:
+        with open(TextFilePath, "r", encoding="ascii", errors="replace") as file:
             fileAsStr = file.read()
 
-        puncutation = "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~"
+
+        # print(fileAsStr)
+
+        puncutation = "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~�"
         for character in puncutation:
             fileAsStr = fileAsStr.replace(character, " ")
             
-        allWords = [Token(word) for word in fileAsStr.split() if word.isascii()]
+        allWords = [Token(word) for word in fileAsStr.split()]
 
         # print(allWords)
 
@@ -69,7 +72,8 @@ class TokenMethod:
 
         # print(frequencyMapping)
 
-        sortedFrequencies = sorted(frequencyMapping.items())
+        #reversal from anossov's first code block in https://www.reddit.com/r/learnpython/comments/2anwld/how_do_i_sort_dictionary_keys_by_their_values/
+        sortedFrequencies = sorted(frequencyMapping.items(), key=lambda pair: pair[1], reverse=True)
     
         # print("printing sorted Frequencies: ", sortedFrequencies)
 
@@ -79,14 +83,14 @@ class TokenMethod:
 def main():
     filePath = input("Please enter a text file to tokenize, or submit a null string to terminate the program.\n")
     if filePath:
-        # try:
+        try:
             tm = TokenMethod
             tokenized = tm.tokenize(filePath)
             frequencies = tm.computeWordFrequencies(tokenized)
             tm.print(frequencies)
             print()
         
-        # except:
+        except:
             print("Unable to open path. Try again.")
             print()
             main()

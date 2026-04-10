@@ -1,3 +1,5 @@
+import sys
+
 class Token:
     def __init__(self, value: str):
         self._value = value.lower()
@@ -81,8 +83,8 @@ class TokenMethod:
             print(f'{token} - {frequency}')
 
 def main():
-    filePath = input("Please enter a text file to tokenize, or submit a null string to terminate the program.\n")
-    if filePath:
+    if len(sys.argv) == 2:
+        filePath = sys.argv[1]
         try:
             tm = TokenMethod
             tokenized = tm.tokenize(filePath)
@@ -91,9 +93,9 @@ def main():
             print()
         
         except:
-            print("Unable to open path. Try again.")
-            print()
-            main()
-
+            print("Unable to open path or path is invalid. Please restart the program to try again.") # CHANGE LATER
+    else:
+        print("Please restart the program and specify one file path")
+   
 if __name__ == "__main__":
     main()

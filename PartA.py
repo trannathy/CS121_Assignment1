@@ -11,8 +11,6 @@ class TokenMethod:
 
     def tokenize(TextFilePath: str) -> list[Token]:
 
-        #NEED TO CHANGE THIS TO SUPPORT PUNCUTATION
-
         ''' Write a method/function that reads in a text file and returns a 
         list of the tokens in that file. For the purposes of this project,
         a token is a sequence of alphanumeric characters, independent of

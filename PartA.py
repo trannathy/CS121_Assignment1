@@ -11,41 +11,47 @@ class TokenMethod:
 
     def tokenize(TextFilePath: str) -> list[Token]:
 
-        ''' Write a method/function that reads in a text file and returns a 
-        list of the tokens in that file. For the purposes of this project,
-        a token is a sequence of alphanumeric characters, independent of
-        capitalization (so Apple, apple, aPpLe are the same token). You
-        are not allowed to use regular expressions, and you are not allowed
-        to import a tokenizer (e.g. from NLTK), since you are being asked to
-        write a tokenizer. '''
+        # RUNTIME: this should, for the most part, run in O(n), but O(n^2) in rare cases.
+        # Most of the parsing in done in the O(n) puncuation loop and the list comprehensions.
+        # In most cases, notAlNum should be empty, but if it is not, there is a nested
+        # for loop that runs in (ON^2) 
+
+
         if (TextFilePath.startswith("\"") and TextFilePath.endswith("\"")) or (TextFilePath.startswith("\'") and TextFilePath.endswith("\'")):
             TextFilePath = TextFilePath[1:-1]
-
-        # print("trying to open: " + TextFilePath)
 
         with open(TextFilePath, "r", encoding="ascii", errors="replace") as file:
             fileAsStr = file.read()
 
-
-        # print(fileAsStr)
-
+        #O(n)
         puncutation = "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~�"
         for character in puncutation:
             fileAsStr = fileAsStr.replace(character, " ")
-            
-        allWords = [Token(word) for word in fileAsStr.split()]
 
-        # print(allWords)
+        words = fileAsStr.split()
+        allTokens = [Token(word) for word in fileAsStr.split() if word.isalnum()]
+        notAlNum = [word for word in words if not word.isalnum()]
 
-        return allWords
+        #O(n^2)
+        for word in notAlNum: 
+            for character in word:
+                if not character.isalnum():
+                    word = word.replace(character, " ")
+
+            newWords = word.split()
+            for alNum in newWords:
+                allTokens.append(Token(alNum))
+
+        # print(allTokens)
+
+        return allTokens
 
     def computeWordFrequencies(tokenList: list[Token]) -> dict:
-        ''' returns Map<Token,Count>  
-        Write another method/function that counts the number of occurrences
-        of each token in the token list. Remember that you should write this
-        assignment yourself from scratch so you are not allowed to import a
-        counter when the assignment asks you to write that method. '''
         
+        # RUNTIME: This should run in O(n), as it iterates through each
+        # token in the dictionary
+
+
         mappedFrequencies = {}
         for token in tokenList:
             if token.value() in mappedFrequencies.keys():
@@ -55,32 +61,21 @@ class TokenMethod:
         return mappedFrequencies
 
     def print(frequencyMapping: dict) -> None:
-        '''Finally, write a method that prints out the word frequency count
-        onto the screen. The print out should be ordered by decreasing 
-        frequency (so, the highest frequency words first). 
-
-        Choose one of the following: 
-
-        <token>\t<freq>
-        <token> <freq>
-                                 <token> - <freq>
-        <token> = <freq>
-        <token> > <freq>
-        <token> -> <freq>
-        <token> => <freq>'''
-
-
-        # print(frequencyMapping)
+    
+        # RUNTIME: This should run in O(n), as it iterates through each
+        # token in the dictionary.items().
 
         #reversal from anossov's first code block in https://www.reddit.com/r/learnpython/comments/2anwld/how_do_i_sort_dictionary_keys_by_their_values/
         sortedFrequencies = sorted(frequencyMapping.items(), key=lambda pair: pair[1], reverse=True)
     
-        # print("printing sorted Frequencies: ", sortedFrequencies)
-
         for token, frequency in sortedFrequencies:
             print(f'{token} - {frequency}')
 
 def main():
+    # RUNTIME Utilizes above functions with no loops, meaning that it takes on the 
+    # highest runtime from the above methods. tokenize() has the highest runtime,
+    # with its possibility of an O(n^2) runtime.
+    
     if len(sys.argv) == 2:
         filePath = sys.argv[1]
         try:

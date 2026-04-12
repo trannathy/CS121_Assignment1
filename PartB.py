@@ -2,6 +2,9 @@ from PartA import Token, TokenMethod
 import sys
 
 def sameTokens(first: dict, sec: dict) -> None:
+    # RUNTIME: O(n) as it iterates through an interesection of two dictionaries;
+    # one with n elements and another with m elements.
+
     numSharedTokens = 0
 
     for commonToken in (first.keys() & sec.keys()):
@@ -13,6 +16,10 @@ def sameTokens(first: dict, sec: dict) -> None:
 
 
 def main():
+    # RUNTIME Utilizes sameTokens as well as all methods from Part A, besides main()
+    # meaning that it takes on the highest runtime from the above methods. tokenize() has the highest runtime,
+    # with its possibility of an O(n^2) runtime.
+
     if len(sys.argv) == 3:
         filePath1 = sys.argv[1]
         filePath2 = sys.argv[2]
